@@ -1,6 +1,7 @@
 package br.edu.ifba.saj.sistemabanco.operacao;
 
 import br.edu.ifba.saj.sistemabanco.conta.Conta;
+import br.edu.ifba.saj.sistemabanco.exceptions.SaldoInsuficienteException;
 
 public class Debito extends Operacao {
 
@@ -12,11 +13,9 @@ public class Debito extends Operacao {
 		return getValor()*-1;
 	}
 
-	@Override
-	public boolean valida(Conta conta) {
+	public void valida(Conta conta) {
 		if(conta.getSaldoTotal() >= getValor()) {
-			return true;
+                    throw new SaldoInsuficienteException("Operação não realizada! Saldo insuficiente.");
 		}
-		return false;
 	}
 }

@@ -8,13 +8,9 @@ public class Credito extends Operacao {
 		super(valor);		
 	}
 	
+        @Override
 	public double operar() {
 		return getValor();
-	}
-
-	@Override
-	public boolean valida(Conta conta) {
-		return true;
 	}
 
 }

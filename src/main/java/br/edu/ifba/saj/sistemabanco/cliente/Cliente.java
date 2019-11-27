@@ -1,7 +1,6 @@
 package br.edu.ifba.saj.sistemabanco.cliente;
 
 public class Cliente {
-	
 	private String nomeCompleto;
 	private String CPF;
 	private int score;

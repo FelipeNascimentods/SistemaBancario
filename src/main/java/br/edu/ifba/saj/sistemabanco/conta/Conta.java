@@ -1,9 +1,11 @@
 package br.edu.ifba.saj.sistemabanco.conta;
 
 import  br.edu.ifba.saj.sistemabanco.cliente.Cliente;
+import br.edu.ifba.saj.sistemabanco.exceptions.SaldoInsuficienteException;
 import br.edu.ifba.saj.sistemabanco.operacao.Credito;
 import br.edu.ifba.saj.sistemabanco.operacao.Debito;
 import br.edu.ifba.saj.sistemabanco.operacao.Operacao;
+import br.edu.ifba.saj.sistemabanco.operacao.Transferencia;
 import  br.edu.ifba.saj.sistemabanco.servico.Extrato;
 
 public abstract class Conta {
@@ -53,24 +55,29 @@ public abstract class Conta {
 	}
 	
 	
-	public boolean executa(Operacao operacao) {
-		if(operacao.valida(this)) {
-			double valorOperacao = operacao.operar();
-			this.saldo+=valorOperacao;
-			extrato.registrar(valorOperacao);
-			return true;
-		}
-		return false;
+	protected void executa(Operacao operacao) {
+            try{
+                double valorOperacao = operacao.operar();
+                this.saldo+=valorOperacao;
+                extrato.registrar(valorOperacao);
+            }catch(SaldoInsuficienteException e){
+                System.out.println(e);
+            }
 	}
-
-	public boolean transfere(Conta destino, double valorTransferencia) {
-		Debito debito = new Debito(valorTransferencia);
-		Credito credito = new Credito(valorTransferencia);
-		if(this.executa(debito)) {
-			destino.executa(credito);			
-			return true;
-		}
-		return false;
+        
+        public void sacar(double valorSaque){
+            Debito d = new Debito(valorSaque);
+            this.executa(d);
+        }
+        
+        public void depositar(double valorDeposito){
+            Credito c = new Credito(valorDeposito);
+            this.executa(c);
+        }
+        
+	public void transferir(Conta destino, double valorTransferencia) {
+            Transferencia t = new Transferencia(destino, valorTransferencia);
+            this.executa(t);
 	}
 	
 	public String exibirExtrato(){
